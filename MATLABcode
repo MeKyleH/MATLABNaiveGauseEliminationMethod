@@ -1,0 +1,53 @@
+% Naive_Gauss_Elimination.m
+% Author: Kyle Holt
+% Date: 10/09/13
+% 
+
+% initializes function
+function x = Naive_Gauss_Elimination(A, b)
+% check that dimensions agree
+[n_A, m_A] = size(A);
+[n_b, m_b] = size(b);
+
+if n_A ~= m_A
+    error('This isn''t a square matrix')
+end
+
+if m_A ~=n_b
+    error('These are not valid matrix dimensions')
+end
+
+% FORWARD ELIMINATION
+
+% changes the pivot column from the first row to the second for each
+% iteration
+for k = 1: n_A-1     
+    % (sets elimination equation place) starts at equation 2 and moves down to the next equations 
+    for i = k + 1: n_A   
+        normalizing_factor = A(i,k)/A(k,k);
+        % starts at 1st position of elimination equation and moves across the elimination equation
+        for j = k: n_A  
+            A(i,j) = A(i,j)- normalizing_factor * A(k,j);
+        end
+        % tracks b values for the elimination equation line
+        b(i) = b(i) - normalizing_factor * b(k);
+    end
+end
+
+% BACKWARD SUBSTITUTION
+
+% solves for the last value of x before moving to the other values
+x(n_A) = b(n_A) / A(n_A,n_A);
+% 
+
+% creates a loop to solve for each higher x
+for i = n_A-1: -1: 1
+   % initializes a sum variable
+   sum = 0;
+   for j = i+1: n_A
+       sum = sum + A(i,j)*x(j);
+   end
+
+   x(i)= (b(i) - sum) / A(i,i);
+end
+end
